@@ -1,0 +1,14 @@
+{
+	"db": {
+		"username": "admin",
+		"password": "admin",
+		"host": "192.168.13.238",
+		"port": "27017",
+		"name": "test"
+	},
+	"redis": {
+		"host": "127.0.0.1",
+		"port": 6379,
+		"password": ""
+	}
+}
