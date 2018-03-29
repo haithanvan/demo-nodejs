@@ -51,7 +51,6 @@ module.exports = function(app, db) {
         res.send({'error':'An error has occurred'});
       } else {
         collection.find().toArray(function(err, items) {
-          console.log(items);
           res.send(items);
       });
       }

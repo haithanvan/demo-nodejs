@@ -1,6 +1,7 @@
 import React from 'react';
 import classname from 'classname';
 import { API } from 'constants/config';
+import { socketClient } from '../../socket/socket';
 
 class Messages extends React.Component {
   constructor(props, context) {
@@ -22,18 +23,16 @@ class Messages extends React.Component {
       });
   };
   createMessage = (conversationId, content) => {
-    let data = {
-      conversationId: conversationId,
-      content: content,
+    const data = {
+      conversationId,
+      content,
       createdOn: new Date(),
-      userId: "1"
+      userId: '1'
     };
-    console.log('data :' ,data);
-    fetch(`${API}/messages`,
-      {
-        method: 'POST',
-        body: JSON.stringify(data)
-      })
+    if (socketClient) socketClient.emit('notification', data);
+    this.props.conv.text = content;
+    this.props.onChangeConv(this.props.conv);
+    fetch(`${API}/messages`,{ method: 'POST', body: JSON.stringify(data) })
       .then(res => {
         if (res.ok) {
           return res.json();
@@ -42,7 +41,8 @@ class Messages extends React.Component {
       });
   }
   componentWillReceiveProps(props) {
-    this.fetchMessage(props.conversationId).then(data => { if (data) this.setState({ messages: data }); })
+    if (props.conversationId)
+      this.fetchMessage(props.conversationId).then(data => { if (data) this.setState({ messages: data }); })
   }
   handleChange = (event) => {
     this.setState({ message: event.target.value });
@@ -67,7 +67,7 @@ class Messages extends React.Component {
             this.state.messages ?
               (
                 <div>
-                  { this.state.messages.map(mes => ( <li><span>{mes.content}</span></li>))}
+                  { this.state.messages.map(mes => ( <li key={mes._id}><span>{mes.content}</span></li>))}
                 </div>
               )
               :
@@ -78,20 +78,25 @@ class Messages extends React.Component {
               )
           }
         </div>
-        <div className="write_chat">
-          <form>
-            <div className="input_chat">
-              <textarea className="input-msg"
-                id="fb_info_message" name="input_message"
-                placeholder="Nhập nội dung tại đây..."
-                value={this.state.message.replace(/<br\s?\/?>/g, '\n')}
-                autoComplete="on"
-                onChange={this.handleChange}
-                onKeyPress={this.handleKeyPress}
-              />
+        {
+          this.props.conversationId ?
+            <div className="write_chat">
+              <form>
+                <div className="input_chat">
+                  <textarea className="input-msg"
+                    id="fb_info_message" name="input_message"
+                    placeholder="Nhập nội dung tại đây..."
+                    value={this.state.message.replace(/<br\s?\/?>/g, '\n')}
+                    autoComplete="on"
+                    onChange={this.handleChange}
+                    onKeyPress={this.handleKeyPress}
+                  />
+                </div>
+              </form>
             </div>
-          </form>
-        </div>
+            : ''
+        }
+
       </div>
     );
   }

@@ -4,8 +4,9 @@ const bodyParser     = require('body-parser');
 const db             = require('./app/config/db');
 
 const app            = express();
-
 const port = 8000;
+
+var ioServer 	= require('./app/socket-server')(app);
 
 // app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
 // app.use(bodyParser.json());                                     // parse application/json
@@ -28,6 +29,7 @@ app.use(function(req, res, next) {
   return next();
 });
 
+
 MongoClient.connect(db.url, (err, client) => {
   if (err) return console.log(err)
                       
@@ -35,7 +37,7 @@ MongoClient.connect(db.url, (err, client) => {
   const db1 = client.db("test")
   require('./app/routes')(app, db1);
 
-  app.listen(port, () => {
-    console.log('We are live on ' + port);
-  });               
+  ioServer.listen(port, () => {
+  });
 })
+

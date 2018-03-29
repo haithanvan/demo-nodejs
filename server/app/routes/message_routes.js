@@ -14,8 +14,6 @@ module.exports = function(app, db) {
   });
   app.post('/messages', (req, res) => {
     const data = JSON.parse(req.body);
-    console.log('req.body.content',JSON.parse(req.body).content);
-    console.log('req.body',req.body);
     const note = { 
       content: data.content, 
       conversationId: data.conversationId,
