@@ -13,7 +13,15 @@ module.exports = function(app, db) {
     });
   });
   app.post('/messages', (req, res) => {
-    const note = { text: req.body.body, title: req.body.title };
+    const data = JSON.parse(req.body);
+    console.log('req.body.content',JSON.parse(req.body).content);
+    console.log('req.body',req.body);
+    const note = { 
+      content: data.content, 
+      conversationId: data.conversationId,
+      createdOn: data.createdOn,
+      userId: data.userId
+    };
     db.collection('messages').insert(note, (err, result) => {
       if (err) { 
         res.send({ 'error': 'An error has occurred' }); 
@@ -45,13 +53,13 @@ module.exports = function(app, db) {
       } 
     });
   });
-  app.get('/messages', (req, res) => {
+  app.get('/:id/messages', (req, res) => {
+    const details = { 'conversationId': req.params.id };
     db.collection('messages', function(err, collection) {
       if (err) {
         res.send({'error':'An error has occurred'});
       } else {
-        collection.find().toArray(function(err, items) {
-          console.log(items);
+        collection.find(details).toArray(function(err, items) {
           res.send(items);
       });
       }

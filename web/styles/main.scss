@@ -1,0 +1,113 @@
+@import 'font';
+*{padding:0;margin:0}
+
+.container {
+  margin-top: 10px;
+  height: 500px;
+  border: 1px solid #eee;
+  padding-left: 0;
+  padding-right: 0;
+}
+.conversations {
+  float: left;
+  width: 300px;
+  .people {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    overflow: auto;
+    overflow-x: hidden;
+  }
+  .person {
+    position: relative;
+    width: 100%;
+    padding: 7px 10px;
+    cursor: pointer;
+    background-color: #fff;
+    overflow: hidden;
+    margin: 0;
+    &:hover {
+      background-color: #eee;
+    }
+    &:active {
+      background-color: #419FD9;
+      span {
+        color: #fff !important;
+      }
+    }
+    &.active {
+      background-color: #419FD9;
+      span {
+        color: #fff !important;
+      }
+    }
+  }
+}
+.detail-conversation {
+  overflow: hidden;
+  background-color: #eee;
+  height: 499px;;
+  .no-people-choose-chat {
+    text-align: center;
+  }
+}
+
+.avatar {
+  img {
+    width: 48px;
+    height: 48px;
+    float: left;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    vertical-align: middle;
+  }
+}
+
+.wrap_chat {
+  overflow: hidden;
+  .info {
+    float: left;
+    overflow: hidden;
+    text-align: left;
+    display: block;
+    margin-left: 10px;
+    max-width: calc(100% - 190px);
+    justify-content: center;
+    span {
+        display: block;
+    }
+    .name {
+        font-size: 15px;
+        font-weight: bold;
+        color: rgb(24, 23, 23);
+        line-height: 24px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .live_chat {
+          font-size: 13px;
+          line-height: 17px;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          color: rgba(153, 153, 153, 1);
+      }
+  }
+}
+.list-mes{
+  height: 429px;
+}
+.write_chat {
+  height: 70px;
+  border: 1px solid #eee;
+  background-color: #fff;
+  .input_chat {
+    .input-msg {
+      width: 80%;
+      padding: 10px 20px;
+      border: none;
+      outline: none;
+    }
+  }
+}
