@@ -13,7 +13,13 @@ module.exports = function(app, db) {
     });
   });
   app.post('/conversations', (req, res) => {
-    const note = { text: req.body.body, title: req.body.title };
+    const data = JSON.parse(req.body);
+    const note = { 
+      text: data.text, 
+      title: data.title,
+      modified: data.modified
+    };
+    console.log(note);
     db.collection('conversations').insert(note, (err, result) => {
       if (err) { 
         res.send({ 'error': 'An error has occurred' }); 
@@ -36,7 +42,12 @@ module.exports = function(app, db) {
   app.put('/conversations/:id', (req, res) => {
     const id = req.params.id;
     const details = { '_id': new ObjectID(id) };
-    const note = { text: req.body.body, title: req.body.title };
+    const data = JSON.parse(req.body);
+    const note = { 
+      text: data.text, 
+      title: data.title,
+      modified: data.modified
+    };
     db.collection('conversations').update(details, note, (err, result) => {
       if (err) {
           res.send({'error':'An error has occurred'});

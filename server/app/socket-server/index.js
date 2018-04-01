@@ -30,6 +30,12 @@ var init = function(app){
             console.log('notification', data);
             io.sockets.in(room).emit('notification', data);
         });
+        socket.on('notification-typing', function (data) {
+            const room = 1;
+            socket.join(room);
+            console.log('notification-typing', data);
+            io.sockets.in(room).emit('notification-typing', data);
+        });
     });
 
 	// The server object will be then used to list to a port number

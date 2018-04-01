@@ -2,6 +2,9 @@ import React from 'react';
 import classname from 'classname';
 import { API } from 'constants/config';
 import { socketClient } from '../../socket/socket';
+import ReactChatView from './ReactChatView';
+import Message from './Message';
+import { getUser } from 'util/storage';
 
 class Messages extends React.Component {
   constructor(props, context) {
@@ -9,7 +12,8 @@ class Messages extends React.Component {
 
     this.state = {
       messages: null,
-      message: ''
+      message: '',
+      user: getUser()
     };
   }
 
@@ -27,7 +31,7 @@ class Messages extends React.Component {
       conversationId,
       content,
       createdOn: new Date(),
-      userId: '1'
+      userId: this.state.user ? this.state.user.id : getUser().id
     };
     if (socketClient) socketClient.emit('notification', data);
     this.props.conv.text = content;
@@ -42,10 +46,20 @@ class Messages extends React.Component {
   }
   componentWillReceiveProps(props) {
     if (props.conversationId)
-      this.fetchMessage(props.conversationId).then(data => { if (data) this.setState({ messages: data }); })
+      {
+        this.fetchMessage(props.conversationId).then(data => {  if (data) this.setState({ messages: data }); })
+      }
   }
   handleChange = (event) => {
     this.setState({ message: event.target.value });
+    const data = {
+      conversationId : this.props.conversationId,
+      isTyping : event.target.value ? true : false,
+      userTyping : getUser().name,
+      content : event.target.value,
+      socketId : socketClient.id
+    }
+    if (socketClient) socketClient.emit('notification-typing', data);
   }
   handleKeyPress = (event) => {
     if (event.nativeEvent.keyCode === 13
@@ -57,6 +71,11 @@ class Messages extends React.Component {
         message: ''
       });
       $('#fb_info_message').focus();
+      const data = {
+        conversationId : this.props.conversationId,
+        isTyping : false,
+      }
+      if (socketClient) socketClient.emit('notification-typing', data);
     }
   };
   render() {
@@ -67,7 +86,26 @@ class Messages extends React.Component {
             this.state.messages ?
               (
                 <div>
-                  { this.state.messages.map(mes => ( <li key={mes._id}><span>{mes.content}</span></li>))}
+                  <div className="infor-conversation">
+                    <span className="title">{this.props.conv.title}</span>
+                  </div>
+                  <ReactChatView className="message-list"
+                    flipped={true}
+                    scrollLoadThreshold={0}
+                  >
+                    {
+                      this.state.messages.sort((a, b) => {
+                        return (new Date(b.createdOn))- new Date(a.createdOn);
+                      }).map(mes => (
+                        <Message
+                          myself={this.state.user && mes.userId === this.state.user.id}
+                          mes={mes}
+                          key={mes._id}
+                          user={this.state.user}
+                        />
+                      ))
+                    }
+                  </ReactChatView>
                 </div>
               )
               :
@@ -96,7 +134,6 @@ class Messages extends React.Component {
             </div>
             : ''
         }
-
       </div>
     );
   }
