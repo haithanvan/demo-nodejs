@@ -38,6 +38,7 @@ MongoClient.connect(db.url, (err, client) => {
   require('./app/routes')(app, db1);
 
   ioServer.listen(port, () => {
+    console.log('xin chao');
   });
 })
 
