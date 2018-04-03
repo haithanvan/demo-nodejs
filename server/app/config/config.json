@@ -2,7 +2,7 @@
 	"db": {
 		"username": "admin",
 		"password": "admin",
-		"host": "192.168.13.238",
+		"host": "118.70.187.17",
 		"port": "27017",
 		"name": "test"
 	},
